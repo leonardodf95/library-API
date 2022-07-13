@@ -4,10 +4,12 @@ import BooksRoutes from "./books.routes";
 
 const routes = Router()
 
-//Admin --login, cadastro de livro, editar livro, excluir livro, listar livros,
+
 routes.use('/book', BooksRoutes);
 
+//Admin --> Listar*, pesquisa, delete, alteração
+//User --> Listar*, pesquisa, reservar
 
-//Users --Listagem, pesquisas, login --favoritos, reservas.
+
 
 export default routes

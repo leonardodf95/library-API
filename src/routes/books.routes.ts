@@ -1,62 +1,80 @@
 import { Router } from "express";
+import BookDto from "../dtos/bookDto";
+import FieldExceptions from "../exceptions/fieldExceptions";
 import Book from "../models/Book";
 import BooksRepository from "../repositories/booksRepository";
+import DeleteBookUseCase from "../useCases/books/deleteBook";
+import GetBookUseCase from "../useCases/books/getBook";
+import ListBookUseCase from "../useCases/books/listBooks";
+import RegisterBookUseCase from "../useCases/books/registrationBook";
+import UpdateBookUseCase from "../useCases/books/updateBook";
+
 
 const booksRoutes = Router()
 const repository = new BooksRepository();
 
 //Listagem
-booksRoutes.get('/',async (req, res) => {
-    const books = repository.list()
-    return res.send(books)
+booksRoutes.get('/',async (request, response) => {
+    const useCase = new ListBookUseCase(repository)
+    const books = useCase.execute()
+    return response.send(books)
 })
 
 //Pesquisa
-booksRoutes.get('/:id',async (req, res) => {
-    const { id } = req.params;
-    const book = repository.getById(id)
-    if (!book) {
-        return res.status(404).send()
+booksRoutes.get('/:query',async (request, response) => {
+    try {
+        const { query } = request.params;
+        const useCase = new GetBookUseCase(repository)
+        const books = useCase.execute( query )
+        return response.send(books)
+    } catch (error) {
+        if(error instanceof FieldExceptions){
+            return response.status(404).send(error.errors)
+        }   
     }
-    return res.send(book)
+    
 })
 
+
 //Cadastro
-booksRoutes.post('/',async (req, res) => {
+booksRoutes.post('/',async (request, response) => {
     try {
-        const {name,author,publishing_company,language} = req.body as Book
-        const newBook = new Book(name, author, publishing_company, language)
-        repository.add(newBook)
-        return res.status(201).send(newBook)
+        const useCase = new RegisterBookUseCase(repository)
+        const newBook = useCase.execute(request.body as BookDto)        
+        return response.status(201).send(newBook)
     } catch (error) {
-        return res.send({
-            message: error.message
-        })    ;    
+        if(error instanceof FieldExceptions)
+            return response.send(error.errors).status(error.statusCode);
+        return response.send({
+            message: "An unhandled exception has ocurred"
+        })
     }
 })
 
 //Edição
-booksRoutes.put('/:id',async (req,res) => {
+booksRoutes.put('/:id',async (request,response) => {
     try {
-        const { id } = req.params
-        const { name, author, publishing_company, language } = req.body as Book
-        // const books = repository.list()
-        // const bookFoundIndex = books.findIndex((book) => book.id === id)
-        const book = new Book(name, author, publishing_company, language);
-        book.id = id
-        repository.update(book)
-        return res.send(book)
-    } catch (error) {
-        return res.send({ message: error.message})
+        const { id } = request.params
+        const { name, author, publishing_company, language } = request.body as Book
+        const useCase = new UpdateBookUseCase(repository)
+        const book = useCase.execute({id,name,author,publishing_company,language})
+        return response.send(book)
+    } catch (error: any) {
+        if(error instanceof FieldExceptions)
+            return response.send(error.errors).status(error.statusCode);
+        return response.send({
+            message: "An unhandled exception has ocurred"
+        })
     }
 })
 
-booksRoutes.delete('/:id',async (req, res) => {
+//Deletar
+booksRoutes.delete('/:id',async (request, response) => {
     try {
-        const {id} = req.params;
-
-        repository.delete(id)
-        res.send()
+        const { id } = request.params
+        const useCase = new DeleteBookUseCase(repository)
+        useCase.execute(id)
+        response.send()
     } catch (error) {
         
     }

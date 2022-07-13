@@ -1,5 +1,4 @@
 import Book from "../models/Book";
-import booksRoutes from "../routes/books.routes";
 
 export default class BooksRepository{
     private _books: Book[];
@@ -10,19 +9,6 @@ export default class BooksRepository{
 
     public list(): Book[] {
         return this._books;
-    }
-
-    // public getByName(name: string): Book {
-    //     const books: Book[] = this._books.map((x)=> {
-    //         if(x.name.toLowerCase().includes(name.toLowerCase())){
-    //             return x
-    //         }
-    //     })
-    //     return books;
-    // }
-
-    public getById(id: string): Book | undefined {
-        return this._books.find((book) => book.id.toLowerCase() === id.toLowerCase())
     }
 
     public add(book: Book): void {
@@ -38,7 +24,11 @@ export default class BooksRepository{
     }
 
     public delete(id: string):void {
-        this._books = this._books.filter((book) => book.id.toLowerCase() !== id.toLowerCase())
+        this._books = this._books.filter((book) => book.id.toUpperCase() !== id.toUpperCase())
+    }
+
+    public get(predicate: (value: Book) => boolean): Book[] | undefined {
+        return this._books.filter(predicate)
     }
 
 }

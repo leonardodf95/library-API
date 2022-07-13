@@ -4,13 +4,13 @@ import BooksRepository from "../../repositories/booksRepository";
 import FieldError from "../../dtos/fieldErrors";
 import FieldExceptions from "../../exceptions/fieldExceptions";
 
-export default class RegisterBookUseCase {
+export default class UpdateBookUseCase {
     private _repository: BooksRepository
     constructor(repository: BooksRepository){
         this._repository = repository
     }
 
-    public execute({ name, author, language, publishing_company}: Omit<BookDto, 'id'>){
+    public execute({ id, name, author, language, publishing_company}: BookDto){
         const errors: FieldError[] = []
         
         if(!name){
@@ -36,7 +36,8 @@ export default class RegisterBookUseCase {
             throw new FieldExceptions(errors)
         }
         const newBook = new Book({name, author, publishing_company, language})
-        this._repository.add(newBook)
-        return newBook
+        newBook.id = id
+        this._repository.update(newBook)
+        
     }
 }
