@@ -1,21 +1,24 @@
 import express from "express";
-import cors from 'cors'
+import cors from "cors";
 import routes from "./routes";
 import logMiddleware from "./middlewares/log";
 
+const runServer = () => {
+  const server = express();
+  
+  server.use(cors());
+  server.use(express.json());
+  server.use(logMiddleware);
+  server.use(routes);
+  
+  server.listen(() => {
+    console.log("Server is running!");
+  });
 
-function runServer() {
-    
-    const server = express();
+  return server
 
-    server.use(cors());
-    server.use(express.json());
-    server.use(logMiddleware)
-    server.use(routes);
-
-    server.listen(3333, ()=>{
-        console.log('Server is running!')
-    });
 }
 
 runServer()
+
+export default runServer

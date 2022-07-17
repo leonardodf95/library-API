@@ -38,6 +38,6 @@ export default class UpdateBookUseCase {
         const newBook = new Book({name, author, publishing_company, language})
         newBook.id = id
         this._repository.update(newBook)
-        
+        return newBook
     }
 }
