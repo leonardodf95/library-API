@@ -4,6 +4,8 @@ import routes from "./routes";
 import logMiddleware from "./middlewares/log";
 
 const runServer = () => {
+  const PORT = process.env.PORT || 3333;
+  
   const server = express();
   
   server.use(cors());
@@ -11,8 +13,8 @@ const runServer = () => {
   server.use(logMiddleware);
   server.use(routes);
   
-  server.listen(() => {
-    console.log("Server is running!");
+  server.listen(PORT,() => {
+    console.log(`Server is running on port ${PORT}`);
   });
 
   return server

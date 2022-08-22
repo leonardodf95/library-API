@@ -3,5 +3,5 @@ export default interface BookDto{
     name: string;
     author: string;
     publishing_company: string;
-    language?: string;
+    language?: string | null;
 }

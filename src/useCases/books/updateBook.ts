@@ -1,16 +1,17 @@
 import BookDto from "../../dtos/bookDto";
-import Book from "../../models/Book";
-import BooksRepository from "../../repositories/booksRepository";
+// import Book from "../../models/Book";
+// import BooksRepository from "../../repositories/booksRepository";
 import FieldError from "../../dtos/fieldErrors";
 import FieldExceptions from "../../exceptions/fieldExceptions";
+import { prisma } from "../../prisma/Client";
 
 export default class UpdateBookUseCase {
-    private _repository: BooksRepository
-    constructor(repository: BooksRepository){
-        this._repository = repository
-    }
+    // private _repository: BooksRepository
+    // constructor(repository: BooksRepository){
+    //     this._repository = repository
+    // }
 
-    public execute({ id, name, author, language, publishing_company}: BookDto){
+    public async execute({ id, name, author, language, publishing_company}: BookDto){
         const errors: FieldError[] = []
         
         if(!name){
@@ -35,9 +36,19 @@ export default class UpdateBookUseCase {
         if(errors.length > 0) {
             throw new FieldExceptions(errors)
         }
-        const newBook = new Book({name, author, publishing_company, language})
-        newBook.id = id
-        this._repository.update(newBook)
+        // const newBook = new Book({name, author, publishing_company, language})
+        // newBook.id = id
+        // this._repository.update(newBook)
+        const newBook = await prisma.book.update({
+            where: { id },
+            data: {
+                id,
+                name,
+                author,
+                publishing_company,
+                language
+            }
+        })
         return newBook
     }
 }
