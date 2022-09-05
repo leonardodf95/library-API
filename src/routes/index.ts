@@ -1,5 +1,6 @@
 import { Router } from "express";
 import BooksRoutes from "./books.routes";
+import userRoutes from "./user.routes";
 
 
 const routes = Router()
@@ -7,8 +8,7 @@ const routes = Router()
 
 routes.use('/book', BooksRoutes);
 
-//Admin --> Listar*, pesquisa, delete, alteração
-//User --> Listar*, pesquisa, reservar
+routes.use('/user', userRoutes)
 
 
 

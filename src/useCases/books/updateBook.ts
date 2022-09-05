@@ -11,7 +11,7 @@ export default class UpdateBookUseCase {
     //     this._repository = repository
     // }
 
-    public async execute({ id, name, author, language, publishing_company}: BookDto){
+    public async execute({ id, name, author, publishing_company, quantity, doweySystem}: BookDto){
         const errors: FieldError[] = []
         
         if(!name){
@@ -33,6 +33,19 @@ export default class UpdateBookUseCase {
             })
         }
 
+        if (!doweySystem && Number.isNaN(doweySystem)){
+            errors.push({
+              field: "Dowey System",
+              message: "Dowey System is required and is a number!"
+            })
+          }
+          if (quantity && !Number.isInteger(quantity)){
+            errors.push({
+              field: "Quantity",
+              message: "Quantity is a number integer!"
+            })
+          }
+
         if(errors.length > 0) {
             throw new FieldExceptions(errors)
         }
@@ -46,7 +59,8 @@ export default class UpdateBookUseCase {
                 name,
                 author,
                 publishing_company,
-                language
+                doweySystem,
+                quantity
             }
         })
         return newBook

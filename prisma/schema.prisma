@@ -10,12 +10,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id String @id @default(uuid())
+  name String
+  email String
+  password String
+  cellNumber String
+  books BookRents[]
+
+  @@map("user")
+}
+
 model Book {
   id String @id @default(uuid())
   name String
   author String
   publishing_company String
-  language String?
+  doweySystem Int @default(000)
+  quantity Int @default(0)
+  users BookRents[]
 
   @@map("book")
+}
+
+model BookRents{
+  
+  user User @relation(fields: [userID], references: [id])
+  userID String 
+  book Book @relation(fields: [bookId], references: [id])
+  bookId String 
+  rentBegin DateTime @default(now())
+  rentFinish DateTime?
+  assessment Float @default(0)
+
+  @@map("bookrents")
+  @@id([userID, bookId])
+}
+
+model Admin{
+  id String @id @default(uuid())
+  name String
+  email String
+  password String
 }

@@ -4,7 +4,7 @@ import routes from "./routes";
 import logMiddleware from "./middlewares/log";
 
 const runServer = () => {
-  const PORT = process.env.PORT || 3333;
+  const PORT = process.env.PORT || 3000;
   
   const server = express();
   

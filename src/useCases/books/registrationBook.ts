@@ -1,5 +1,5 @@
 import BookDto from "../../dtos/bookDto";
-import Book from "../../models/Book";
+// import Book from "../../models/Book";
 // import BooksRepository from "../../repositories/booksRepository";
 import FieldError from "../../dtos/fieldErrors";
 import FieldExceptions from "../../exceptions/fieldExceptions";
@@ -14,8 +14,9 @@ export default class RegisterBookUseCase {
   public async execute({
     name,
     author,
-    language,
     publishing_company,
+    quantity,
+    doweySystem
   }: Omit<BookDto, "id">) {
     const errors: FieldError[] = [];
 
@@ -37,6 +38,18 @@ export default class RegisterBookUseCase {
         message: "Publishing company is required!",
       });
     }
+    if (!doweySystem && Number.isNaN(doweySystem)){
+      errors.push({
+        field: "Dowey System",
+        message: "Dowey System is required and is a number!"
+      })
+    }
+    if (quantity && !Number.isInteger(quantity)){
+      errors.push({
+        field: "Quantity",
+        message: "Quantity is a number integer!"
+      })
+    }
 
     if (errors.length > 0) {
       throw new FieldExceptions(errors);
@@ -48,7 +61,8 @@ export default class RegisterBookUseCase {
         name,
         author,
         publishing_company,
-        language,
+        doweySystem,
+        quantity
       },
     });
     return newBook;

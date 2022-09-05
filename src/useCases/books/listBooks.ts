@@ -11,7 +11,7 @@ export default class ListBookUseCase {
     // }
 
     public async execute(): Promise<BookDto[]> {
-       const books = prisma.book.findMany()
+       const books = await prisma.book.findMany()
        return books
     }
 }

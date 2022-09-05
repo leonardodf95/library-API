@@ -2,17 +2,15 @@ import { Router } from "express";
 import BookDto from "../dtos/bookDto";
 import FieldExceptions from "../exceptions/fieldExceptions";
 import searchExceptions from "../exceptions/searchExceptions";
-// import Book from "../models/Book";
-// import BooksRepository from "../repositories/booksRepository";
 import DeleteBookUseCase from "../useCases/books/deleteBook";
 import GetBookUseCase from "../useCases/books/getBook";
 import ListBookUseCase from "../useCases/books/listBooks";
 import RegisterBookUseCase from "../useCases/books/registrationBook";
 import UpdateBookUseCase from "../useCases/books/updateBook";
+import { genericExceptionMessage } from "../utils/constants";
 
 
 const booksRoutes = Router()
-// const repository = new BooksRepository();
 
 //Listagem
 booksRoutes.get('/',async (request, response) => {
@@ -26,12 +24,15 @@ booksRoutes.get('/:query',async (request, response) => {
     try {
         const { query } = request.params;
         const useCase = new GetBookUseCase()
+        console.log('query', query)
         const books = await useCase.execute( query )
+        console.log('books', books)
         return response.send(books)
     } catch (error) {
         if(error instanceof searchExceptions){
             return response.status(error.errors.statusCode).send(error.errors.message)
-        }   
+        }
+        return response.status(500).send(genericExceptionMessage)
     }
     
 })
@@ -46,9 +47,7 @@ booksRoutes.post('/',async (request, response) => {
     } catch (error) {
         if(error instanceof FieldExceptions)
             return response.send(error.errors).status(error.statusCode);
-        return response.send({
-            message: "An unhandled exception has ocurred"
-        })
+        return response.send(genericExceptionMessage)
     }
 })
 
@@ -56,16 +55,14 @@ booksRoutes.post('/',async (request, response) => {
 booksRoutes.put('/:id',async (request,response) => {
     try {
         const { id } = request.params
-        const { name, author, publishing_company, language } = request.body as BookDto
+        const { name, author, publishing_company, quantity, doweySystem } = request.body as BookDto
         const useCase = new UpdateBookUseCase()
-        const book = await useCase.execute({id,name,author,publishing_company,language})
+        const book = await useCase.execute({id,name,author,publishing_company,quantity,doweySystem})
         return response.send(book)
     } catch (error: any) {
         if(error instanceof FieldExceptions)
-            return response.send(error.errors).status(error.statusCode);
-        return response.send({
-            message: "An unhandled exception has ocurred"
-        })
+            return response.status(error.statusCode).send(error.errors);
+        return response.send(genericExceptionMessage)
     }
 })
 
@@ -74,10 +71,13 @@ booksRoutes.delete('/:id',async (request, response) => {
     try {
         const { id } = request.params
         const useCase = new DeleteBookUseCase()
-        useCase.execute(id)
+        await useCase.execute(id)
         response.send()
     } catch (error) {
-        
+        if(error instanceof searchExceptions){
+            return response.status(error.errors.statusCode).send(error.errors.message)
+        }
+        return response.status(500).send(genericExceptionMessage)
     }
 })
 

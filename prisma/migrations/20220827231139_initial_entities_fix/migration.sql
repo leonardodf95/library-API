@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "bookrents" ADD COLUMN     "assessment" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ALTER COLUMN "rentFinish" DROP NOT NULL;
