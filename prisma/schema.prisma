@@ -17,6 +17,7 @@ model User {
   password String
   cellNumber String
   books BookRents[]
+  
 
   @@map("user")
 }
@@ -39,9 +40,9 @@ model BookRents{
   userID String 
   book Book @relation(fields: [bookId], references: [id])
   bookId String 
-  rentBegin DateTime @default(now())
-  rentFinish DateTime?
-  assessment Float @default(0)
+  rentBegin DateTime
+  rentFinish DateTime
+  penalty Float @default(0)
 
   @@map("bookrents")
   @@id([userID, bookId])
