@@ -36,6 +36,7 @@ model Book {
 
 model BookRents{
   
+  id Int @id @default(autoincrement())
   user User @relation(fields: [userID], references: [id])
   userID String 
   book Book @relation(fields: [bookId], references: [id])
@@ -43,9 +44,7 @@ model BookRents{
   rentBegin DateTime
   rentFinish DateTime
   penalty Float @default(0)
-
   @@map("bookrents")
-  @@id([userID, bookId])
 }
 
 model Admin{

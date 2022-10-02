@@ -1,4 +1,0 @@
--Terminar CRUD de users
--CRUD de administrador
--Modularização de validações
--Aluguéis de livros

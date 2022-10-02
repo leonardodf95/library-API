@@ -1,32 +1,36 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `language` on the `book` table. All the data in the column will be lost.
-
-*/
--- AlterTable
-ALTER TABLE "book" DROP COLUMN "language",
-ADD COLUMN     "doweySystem" INTEGER NOT NULL DEFAULT 0,
-ADD COLUMN     "quantity" INTEGER NOT NULL DEFAULT 0;
-
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "cellNumber" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
+CREATE TABLE "book" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "author" TEXT NOT NULL,
+    "publishing_company" TEXT NOT NULL,
+    "doweySystem" INTEGER NOT NULL DEFAULT 0,
+    "quantity" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "book_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "bookrents" (
+    "is" SERIAL NOT NULL,
     "userID" TEXT NOT NULL,
     "bookId" TEXT NOT NULL,
-    "rentBegin" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "rentBegin" TIMESTAMP(3) NOT NULL,
     "rentFinish" TIMESTAMP(3) NOT NULL,
+    "penalty" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
-    CONSTRAINT "bookrents_pkey" PRIMARY KEY ("userID","bookId")
+    CONSTRAINT "bookrents_pkey" PRIMARY KEY ("is")
 );
 
 -- CreateTable
